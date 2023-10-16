@@ -16,19 +16,26 @@ import {
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   title: z.string().min(1, { message: "Title is required" }),
 });
 
 const CreatePage = () => {
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: { title: "" },
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+    try {
+      const response = axios.post("/api/courses", values);
+      router.push(`/teacher/courses/${response.data.id}`);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const { isSubmitting, isValid } = form.formState;
