@@ -1,5 +1,5 @@
-import Navbar from "./_components/navbar";
-import Sidebar from "./_components/sidebar";
+import Navbar from "../_components/navbar";
+import Sidebar from "../_components/sidebar";
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -10,7 +10,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
       <div className="hidden md:flex h-full w-56 flex-col fixed inset-y-0 z-50">
         <Sidebar />
       </div>
-      <main className="md:pl-56 h-full">{children}</main>
+      <main className="md:pl-56 h-full pt-[80px]">{children}</main>
     </div>
   );
 };
