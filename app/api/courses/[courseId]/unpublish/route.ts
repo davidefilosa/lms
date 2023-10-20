@@ -4,7 +4,7 @@ import { prismadb } from "@/lib/prismadb";
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { courseId: string; chapterId: string } }
+  { params }: { params: { courseId: string } }
 ) {
   try {
     const { userId } = auth();
@@ -24,30 +24,12 @@ export async function PATCH(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const unpublishedChapter = await prismadb.chapter.update({
-      where: { id: params.chapterId, courseId: params.courseId },
+    const unpublishedCourse = await prismadb.course.update({
+      where: { id: params.courseId },
       data: { isPublished: false },
     });
 
-    const publishedChaptersInCourse = await prismadb.chapter.findMany({
-      where: {
-        courseId: params.courseId,
-        isPublished: true,
-      },
-    });
-
-    if (!publishedChaptersInCourse.length) {
-      await prismadb.course.update({
-        where: {
-          id: params.courseId,
-        },
-        data: {
-          isPublished: false,
-        },
-      });
-    }
-
-    return NextResponse.json(unpublishedChapter);
+    return NextResponse.json(unpublishedCourse);
   } catch (error) {
     console.log(error);
     return new NextResponse("Intenal error", { status: 500 });
