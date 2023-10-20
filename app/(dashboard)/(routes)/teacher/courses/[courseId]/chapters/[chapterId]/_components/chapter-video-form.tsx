@@ -28,8 +28,9 @@ const ChapterVideo = ({
   chapterId,
 }: ChapterVideoProps) => {
   const [isEditing, setIsEditing] = useState(false);
-
   const router = useRouter();
+
+  console.log(initialData);
 
   const toggleEdit = () => setIsEditing((current) => !current);
 

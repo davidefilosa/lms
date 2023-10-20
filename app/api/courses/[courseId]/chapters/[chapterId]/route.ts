@@ -44,7 +44,7 @@ export async function PATCH(
       });
 
       if (existingMuxData) {
-        await Video.Assets.del({ existingMuxData });
+        await Video.Assets.del(existingMuxData.assetId);
         await prismadb.muxData.delete({
           where: { id: existingMuxData.id },
         });
@@ -60,12 +60,89 @@ export async function PATCH(
         data: {
           chapterId: params.chapterId,
           assetId: asset.id,
-          playbackId: asset.playbackIds?.[0]?.id,
+          playbackId: asset.playback_ids?.[0]?.id,
         },
       });
     }
 
     return NextResponse.json(course);
+  } catch (error) {
+    console.log(error);
+    return new NextResponse("Intenal error", { status: 500 });
+  }
+}
+
+export async function DELETE(
+  req: Request,
+  { params }: { params: { courseId: string; chapterId: string } }
+) {
+  try {
+    const { userId } = auth();
+
+    if (!userId) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
+
+    const courseOwner = await prismadb.course.findUnique({
+      where: {
+        id: params.courseId,
+        userId: userId,
+      },
+    });
+
+    if (!courseOwner) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
+
+    const chapter = await prisma.chapter.findUnique({
+      where: {
+        id: params.chapterId,
+        courseId: params.courseId,
+      },
+    });
+
+    if (!chapter) {
+      return new NextResponse("Not Found", { status: 404 });
+    }
+
+    if (chapter.videoUrl) {
+      const existingMuxData = await prismadb.muxData.findFirst({
+        where: { chapterId: params.chapterId },
+      });
+
+      if (existingMuxData) {
+        await Video.Assets.del(existingMuxData.assetId);
+        await prismadb.muxData.delete({
+          where: { id: existingMuxData.id },
+        });
+      }
+    }
+
+    const deletedChapter = await prismadb.chapter.delete({
+      where: {
+        id: params.chapterId,
+      },
+    });
+
+    const publishedChaptersInCourse = await prismadb.chapter.findMany({
+      where: {
+        courseId: params.courseId,
+        isPublished: true,
+      },
+    });
+
+    if (!publishedChaptersInCourse.length) {
+      await prismadb.course.update({
+        where: {
+          id: params.courseId,
+        },
+        data: {
+          isPublished: false,
+        },
+      });
+    }
+
+    return NextResponse.json(deletedChapter);
   } catch (error) {
     console.log(error);
     return new NextResponse("Intenal error", { status: 500 });
