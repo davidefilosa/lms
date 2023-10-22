@@ -42,13 +42,13 @@ export const getChapter = async ({
     let attachments: Attachment[] = [];
     let nextChapter: Chapter | null = null;
 
-    if (purchase | chapter.isFree) {
+    if (purchase) {
       attachments = await prismadb.attachment.findMany({
         where: { courseId },
       });
     }
 
-    if (chapter.isFree | purchase) {
+    if (chapter.isFree || purchase) {
       muxData = await prismadb.muxData.findUnique({
         where: { chapterId },
       });
