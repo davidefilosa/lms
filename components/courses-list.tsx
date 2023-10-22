@@ -1,10 +1,16 @@
 "use client";
 
-import { Course } from "@prisma/client";
+import { Course, Category } from "@prisma/client";
 import { CourseCard } from "./course-card";
 
+type CourseWithProgressWithCategory = Course & {
+  category: Category | null;
+  chapters: { id: string }[];
+  progress: number | null;
+};
+
 interface CoursesListProps {
-  items: Course[];
+  items: CourseWithProgressWithCategory[];
 }
 
 const CoursesList = ({ items }: CoursesListProps) => {
