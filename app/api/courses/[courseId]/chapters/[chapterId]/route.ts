@@ -94,7 +94,7 @@ export async function DELETE(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const chapter = await prisma.chapter.findUnique({
+    const chapter = await prismadb.chapter.findUnique({
       where: {
         id: params.chapterId,
         courseId: params.courseId,
