@@ -39,7 +39,9 @@ const DescriptionForm = ({
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: initialData?.categoryId || "",
+    defaultValues: {
+      categoryId: initialData?.categoryId || "",
+    },
   });
 
   const { isSubmitting, isValid } = form.formState;
