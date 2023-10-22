@@ -3,6 +3,7 @@ import axios from "axios";
 import { CheckCircle, XCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 import { Button } from "@/components/ui/button";
 import { useConfettiStore } from "@/hooks/use-confetti-store";
@@ -44,9 +45,11 @@ const CourseProgressButton = ({
       if (!isCompleted && nextChapterId) {
         router.push(`/courses/${courseId}/chapters/${nextChapterId}`);
       }
+      toast.success("Progress updated");
 
       router.refresh();
     } catch {
+      toast.error("Something went wrong");
     } finally {
       setIsLoading(false);
     }

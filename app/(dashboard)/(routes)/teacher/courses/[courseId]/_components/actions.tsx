@@ -6,6 +6,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { Trash } from "lucide-react";
 import ConfimationModal from "@/components/modals/confirmation-modal";
+import toast from "react-hot-toast";
 
 interface ActionsProps {
   disabled: boolean;
@@ -22,12 +23,15 @@ const Actions = ({ disabled, courseId, isPublished }: ActionsProps) => {
       setIsLoading(true);
       if (isPublished) {
         await axios.patch(`/api/courses/${courseId}/unpublish`);
+        toast.success("Course unpublished");
       } else {
         await axios.patch(`/api/courses/${courseId}/publish`);
+        toast.success("Course published");
       }
       router.refresh();
     } catch (error) {
       console.log(error);
+      toast.error("Something went wrong");
     } finally {
       setIsLoading(false);
     }

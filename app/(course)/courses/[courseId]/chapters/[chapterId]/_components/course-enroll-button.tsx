@@ -2,6 +2,7 @@
 
 import axios from "axios";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 import { Button } from "@/components/ui/button";
 import { formatPrice } from "@/lib/format";
@@ -22,6 +23,7 @@ const CourseEnrollButton = ({ price, courseId }: CourseEnrollButtonProps) => {
 
       window.location.assign(response.data.url);
     } catch {
+      toast.error("Something went wrong");
     } finally {
       setIsLoading(false);
     }

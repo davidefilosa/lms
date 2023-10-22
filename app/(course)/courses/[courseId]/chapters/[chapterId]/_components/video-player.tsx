@@ -7,6 +7,7 @@ import { useState } from "react";
 import { Loader2, Lock } from "lucide-react";
 import MuxPlayer from "@mux/mux-player-react";
 import { cn } from "@/lib/utils";
+import { toast } from "react-hot-toast";
 
 interface VideoPlayerProps {
   playbackId: string;
@@ -44,6 +45,8 @@ const VideoPlayer = ({
           confetti.onOpen();
         }
 
+        toast.success("Progress updated");
+
         router.refresh();
 
         if (nextChapterId) {
@@ -52,6 +55,7 @@ const VideoPlayer = ({
       }
     } catch (error) {
       console.log(error);
+      toast.error("Something went wrong");
     }
   };
   return (

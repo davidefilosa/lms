@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { Course, Attachment } from "@prisma/client";
 import Image from "next/image";
 import { FileUpload } from "@/components/file-upload";
+import toast from "react-hot-toast";
 
 interface AttachmentFormProps {
   initialData: Course & { attachments: Attachment[] };
@@ -31,10 +32,13 @@ const AttachmentForm = ({ initialData, courseId }: AttachmentFormProps) => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       await axios.post(`/api/courses/${courseId}/attachments`, values);
+      toast.success("Course updated");
+
       toggleEdit();
       router.refresh();
     } catch (error) {
       console.log(error);
+      toast.error("Something went wrong");
     }
   };
 
@@ -42,9 +46,12 @@ const AttachmentForm = ({ initialData, courseId }: AttachmentFormProps) => {
     try {
       setDeletingId(id);
       await axios.delete(`/api/courses/${courseId}/attachments/${id}`);
+      toast.success("Attachment deleted");
+
       router.refresh();
     } catch (error) {
       console.log(error);
+      toast.error("Something went wrong");
     } finally {
       setDeletingId(null);
     }
