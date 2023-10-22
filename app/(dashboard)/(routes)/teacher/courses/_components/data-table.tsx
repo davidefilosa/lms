@@ -13,6 +13,9 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
+import Link from "next/link";
+import { PlusCircle } from "lucide-react";
+
 import {
   Table,
   TableBody,
@@ -53,7 +56,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
-      <div className="flex items-center py-4">
+      <div className="flex items-center py-4 justify-between">
         <Input
           placeholder="Filter title..."
           value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
@@ -62,6 +65,12 @@ export function DataTable<TData, TValue>({
           }
           className="max-w-sm"
         />
+        <Link href="/teacher/create">
+          <Button>
+            <PlusCircle className="h-4 w-4 mr-2" />
+            New course
+          </Button>
+        </Link>
       </div>
       <div className="rounded-md border">
         <Table>
